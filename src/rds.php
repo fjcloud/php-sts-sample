@@ -31,13 +31,5 @@ if ($mysqli->connect_errno) {
     exit;
 }
 
-/***** Example code to perform a query and return all tables in the DB *****/
-$tableList = array();
-$res = mysqli_query($mysqli,"SHOW TABLES");
-while($cRow = mysqli_fetch_array($res))
-{
-    $tableList[] = $cRow[0];
-}
-echo '<pre>';
-print_r($tableList);
-echo '</pre>';
+$res = mysqli_query($mysqli,"SELECT NOW()");
+print_r($res);
