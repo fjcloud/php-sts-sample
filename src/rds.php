@@ -5,7 +5,7 @@ $clusterEndpoint = getenv('DB_ENDPOINT');
 $clusterPort = getenv('DB_PORT');
 $clusterRegion = getenv('AWS_REGION');
 $dbUsername = getenv('DB_USER');
-$dbDatabase = getenv('DB_PASSWORD');
+$dbDatabase = getenv('DB_NAME');
 /*************************/
 
 // AWS-PHP-SDK installed via Composer
