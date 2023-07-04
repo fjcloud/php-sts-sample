@@ -13,7 +13,11 @@ require 'vendor/autoload.php';
 
 use Aws\Credentials\CredentialProvider;
 
-$provider = CredentialProvider::defaultProvider();
+$provider = CredentialProvider::assumeRoleWithWebIdentityCredentialProvider();
+// Cache the results in a memoize function to avoid loading and parsing
+// the ini file on every API operation
+$provider = CredentialProvider::memoize($provider);
+
 $RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
 
 $token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
