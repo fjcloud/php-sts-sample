@@ -15,7 +15,7 @@ cat <<EOF > ./trust-policy.json
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
                 "StringEquals": {
-                    "$(rosa describe cluster -c ${WS_USER/_/-} -o json | jq -r .aws.sts.oidc_endpoint_url | sed -e 's/^https:\/\///'):sub": "system:serviceaccount:php-sts-sample:default" 
+                    "$(rosa describe cluster -c ${CLUSTER_NAME} -o json | jq -r .aws.sts.oidc_endpoint_url | sed -e 's/^https:\/\///'):sub": "system:serviceaccount:php-sts-sample:default" 
                 }
             }
         }
