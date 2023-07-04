@@ -18,18 +18,9 @@ $RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
 
 $token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
 
-$mysqli = mysqli_init();
+$pgdb = pg_connect("host=$clusterEndpoint dbname=$dbDatabase user=$dbUsername password=$token");
 
-mysqli_options($mysqli, MYSQLI_READ_DEFAULT_FILE, "./my.cnf");
+$res = pg_query($pgdb,"SELECT NOW()");
 
-$mysqli->real_connect($clusterEndpoint, $dbUsername, $token, $dbDatabase, $clusterPort, NULL, MYSQLI_CLIENT_SSL);
-
-if ($mysqli->connect_errno) {
-    echo "Error: Failed to make a MySQL connection, here is why: <br />";
-    echo "Errno: " . $mysqli->connect_errno . "<br />";
-    echo "Error: " . $mysqli->connect_error . "<br />";
-    exit;
-}
-
-$res = mysqli_query($mysqli,"SELECT NOW()");
 print_r($res);
+?>
