@@ -1,11 +1,11 @@
 <?php
 
 /********* CONFIG ********/
-$clusterEndpoint = "";
-$clusterPort = 3306;
-$clusterRegion = "us-east-1";
-$dbUsername = "";
-$dbDatabase = "";
+$clusterEndpoint = getenv('DB_ENDPOINT');
+$clusterPort = getenv('DB_PORT');
+$clusterRegion = getenv('AWS_REGION');
+$dbUsername = getenv('DB_USER');
+$dbDatabase = getenv('DB_PASSWORD');
 /*************************/
 
 // AWS-PHP-SDK installed via Composer
