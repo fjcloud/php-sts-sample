@@ -33,7 +33,7 @@ aws iam create-role --role-name rds_data_access --assume-role-policy-document fi
 Attach Policy :
 
 ```shell
-aws iam attach-role-policy --role-name ${WS_USER}_irsa --policy-arn=arn:aws:iam::aws:policy/AmazonRDSDataFullAccess
+aws iam attach-role-policy --role-name rds_data_access --policy-arn=arn:aws:iam::aws:policy/AmazonRDSDataFullAccess
 ```
 
 
