@@ -9,7 +9,7 @@
             "name": "fjcloud",
             "homepage": "https://github.com/fjcloud"
         }
-    ]
+    ],
     "require": {
         "aws/aws-sdk-php": "^3.2.6"
     }
