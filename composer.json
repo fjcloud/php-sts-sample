@@ -1,7 +1,7 @@
 {
     "name": "fjcoud/php-sts-sample",
     "description": "A sample App for interacting with RDS with STS",
-    "type": "fjcoud/php-sts-sample",
+    "type": "sample-app",
     "minimum-stability": "stable",
     "license": "Apache-2.0",
     "authors": [
