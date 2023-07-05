@@ -1,0 +1,85 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: php-sts
+  namespace: php-sts-sample
+  annotations:
+    deployment.kubernetes.io/revision: '6'
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"php-sts:latest","namespace":"php-sts-sample"},"fieldPath":"spec.template.spec.containers[?(@.name==\"container\")].image","pause":"true"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-sts
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: php-sts
+    spec:
+      restartPolicy: Always
+      serviceAccountName: php-sts
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: container
+          env:
+            - name: DB_ENDPOINT
+              value: database-1.cfz4uxybejj0.eu-west-1.rds.amazonaws.com
+            - name: DB_PORT
+              value: '5432'
+            - name: AWS_REGION
+              value: eu-west-1
+            - name: DB_USER
+              value: postgres
+            - name: DB_NAME
+              value: test
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: bound-sa-token
+              readOnly: true
+              mountPath: /var/run/secrets/openshift/serviceaccount
+            - name: aws-creds
+              mountPath: /opt/app-root/src/.aws
+          terminationMessagePolicy: File
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/php-sts-sample/php-sts@sha256:0372b4c91b8beef6189c66c81007493662a0de9f93f3263907365e214055be61
+      serviceAccount: php-sts
+      volumes:
+        - name: aws-creds
+          secret:
+            secretName: aws-creds
+            defaultMode: 420
+        - name: bound-sa-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  audience: openshift
+                  expirationSeconds: 3600
+                  path: token
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+
+kind: Secret
+apiVersion: v1
+metadata:
+  name: aws-creds
+  namespace: php-sts-sample
+data:
+  credentials: >-
+    W2RlZmF1bHRdCnJvbGVfYXJuID0gYXJuOmF3czppYW06OjY2MDI1MDkyNzQxMDpyb2xlL3Jkc19kYXRhX2FjY2Vzcwp3ZWJfaWRlbnRpdHlfdG9rZW5fZmlsZSA9IC92YXIvcnVuL3NlY3JldHMvb3BlbnNoaWZ0L3NlcnZpY2VhY2NvdW50L3Rva2Vu
+type: Opaque
+
