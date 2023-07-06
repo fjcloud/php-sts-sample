@@ -22,9 +22,21 @@ $RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
 
 $token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
 
-$pgdb = pg_connect("host=$clusterEndpoint dbname=$dbDatabase user=$dbUsername password=$token");
+$db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token sslmode=require");
 
-$res = pg_query($pgdb,"SELECT NOW()");
+   if(!$db) {
+      echo "Error in opening database\n";
+   } else {
+      $sql = "select now();";
+      $ret = pg_query($db, $sql);
+      if(!$ret) {
+         echo pg_last_error($db);
+         exit;
+      } 
+      while($row = pg_fetch_row($ret)) {
+         echo $row[0]."\n";;
+      }
+      pg_close($db);
+   }
 
-print_r($res);
 ?>
