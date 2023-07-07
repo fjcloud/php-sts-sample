@@ -22,7 +22,7 @@ $RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
 
 $token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
 
-$db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token sslmode=require");
+$db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token dbname=$dbDatabase sslmode=require");
 
    if(!$db) {
       echo "Error in opening database\n";
