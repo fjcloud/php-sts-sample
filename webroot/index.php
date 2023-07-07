@@ -9,7 +9,7 @@ $dbDatabase = getenv('DB_NAME');
 /*************************/
 
 // AWS-PHP-SDK installed via Composer
-require 'vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Aws\Credentials\CredentialProvider;
 
