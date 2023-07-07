@@ -1,16 +1,42 @@
 <?php
-/**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- */
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+/********* CONFIG ********/
+$clusterEndpoint = getenv('DB_ENDPOINT');
+$clusterPort = getenv('DB_PORT');
+$clusterRegion = getenv('AWS_REGION');
+$dbUsername = getenv('DB_USER');
+$dbDatabase = getenv('DB_NAME');
+/*************************/
+
+// AWS-PHP-SDK installed via Composer
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Aws\Credentials\CredentialProvider;
+
+$provider = CredentialProvider::assumeRoleWithWebIdentityCredentialProvider();
+// Cache the results in a memoize function to avoid loading and parsing
+// the ini file on every API operation
+$provider = CredentialProvider::memoize($provider);
+
+$RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
+
+$token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
+
+$db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token dbname=$dbDatabase sslmode=require");
+
+   if(!$db) {
+      echo "Error in opening database\n";
+   } else {
+      $sql = "select now();";
+      $ret = pg_query($db, $sql);
+      if(!$ret) {
+         echo pg_last_error($db);
+         exit;
+      } 
+      while($row = pg_fetch_row($ret)) {
+         echo $row[0]."\n";;
+      }
+      pg_close($db);
+   }
+
+?>
