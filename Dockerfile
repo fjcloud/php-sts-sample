@@ -9,6 +9,9 @@ RUN TEMPFILE=$(mktemp) && \
     php <"$TEMPFILE" && \
     ./composer.phar install --no-interaction --no-ansi --optimize-autoloader
 
+# Ensure that environment variables are maintained, add it to an existing [www] pool.
+RUN echo "clear_env = no" >> /etc/php-fpm.d/www.conf
+
 # Run script uses standard ways to configure the PHP application
 # and execs httpd -D FOREGROUND at the end
 # See more in <version>/s2i/bin/run in this repository.
