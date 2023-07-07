@@ -18,11 +18,7 @@ spec:
       labels:
         app: php-sts
     spec:
-      restartPolicy: Always
       serviceAccountName: php-sts
-      schedulerName: default-scheduler
-      terminationGracePeriodSeconds: 30
-      securityContext: {}
       containers:
         - resources: {}
           terminationMessagePath: /dev/termination-log
@@ -50,7 +46,7 @@ spec:
               mountPath: /opt/app-root/src/.aws
           terminationMessagePolicy: File
           image: >-
-            image-registry.openshift-image-registry.svc:5000/php-sts-sample/php-sts@sha256:0372b4c91b8beef6189c66c81007493662a0de9f93f3263907365e214055be61
+            image-registry.openshift-image-registry.svc:5000/php-sts-sample/php-sts
       serviceAccount: php-sts
       volumes:
         - name: aws-creds
@@ -83,3 +79,35 @@ data:
     W2RlZmF1bHRdCnJvbGVfYXJuID0gYXJuOmF3czppYW06OjY2MDI1MDkyNzQxMDpyb2xlL3Jkc19kYXRhX2FjY2Vzcwp3ZWJfaWRlbnRpdHlfdG9rZW5fZmlsZSA9IC92YXIvcnVuL3NlY3JldHMvb3BlbnNoaWZ0L3NlcnZpY2VhY2NvdW50L3Rva2Vu
 type: Opaque
 
+---
+
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: php-sts
+  namespace: php-sts-sample
+
+---
+
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: php-sts
+  namespace: php-sts-sample
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'php-sts:latest'
+  resources: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Containerfile
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/fjcloud/php-sts-sample.git'
+    contextDir: /
+  runPolicy: Serial
