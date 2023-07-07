@@ -1,5 +1,7 @@
 FROM registry.redhat.io/ubi9/php-81
 
+COPY . /opt/app-root/src
+
 # Install the dependencies
 RUN TEMPFILE=$(mktemp) && \
     curl -o "$TEMPFILE" "https://getcomposer.org/installer" && \
