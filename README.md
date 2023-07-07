@@ -37,7 +37,7 @@ cat <<EOF > ./rds-connect-policy.json
                 "rds-db:connect"
             ],
             "Resource": [
-                "arn:aws:rds-db:eu-west-1:660250927410:dbuser:db-PSJPTPUSVHR3THGFRRAZ6LCSJ4/iamuser"
+                "arn:aws:rds-db:eu-west-1:$(aws sts get-caller-identity --query 'Account' --output text):dbuser:${DB_ID}/iamuser"
             ]
         }
     ]
