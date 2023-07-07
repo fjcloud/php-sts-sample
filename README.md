@@ -1,6 +1,6 @@
 # php-sts-sample
 
-STS policy :
+STS trust policy :
 
 ```shell
 cat <<EOF > ./trust-policy.json
@@ -18,6 +18,27 @@ cat <<EOF > ./trust-policy.json
                     "$(rosa describe cluster -c ${CLUSTER_NAME} -o json | jq -r .aws.sts.oidc_endpoint_url | sed -e 's/^https:\/\///'):sub": "system:serviceaccount:php-sts-sample:default" 
                 }
             }
+        }
+    ]
+}
+EOF
+```
+
+Policy access rds with `iamuser` :
+
+```shell
+cat <<EOF > ./rds-connect-policy.json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds-db:connect"
+            ],
+            "Resource": [
+                "arn:aws:rds-db:eu-west-1:660250927410:dbuser:db-PSJPTPUSVHR3THGFRRAZ6LCSJ4/iamuser"
+            ]
         }
     ]
 }
