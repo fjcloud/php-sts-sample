@@ -1,5 +1,13 @@
 # php-sts-sample
 
+prepare db :
+
+```shell
+CREATE USER iamuser WITH LOGIN; 
+GRANT rds_iam TO iamuser;
+CREATE DATABASE iamdb;
+```
+
 STS trust policy :
 
 ```shell
