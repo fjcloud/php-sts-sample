@@ -1,5 +1,18 @@
 # php-sts-sample
 
+Create db :
+
+```shell
+aws rds create-db-instance \
+    --db-instance-identifier psql-01 \
+    --db-instance-class db.t3.micro \
+    --engine postgres \
+    --master-username postgres \
+    --master-user-password <secretmasterpassword> \
+    --allocated-storage 20 \
+    --enable-iam-database-authentication
+```
+
 prepare db :
 
 ```shell
