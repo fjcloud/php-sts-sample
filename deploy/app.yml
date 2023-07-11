@@ -81,14 +81,6 @@ type: Opaque
 
 ---
 
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  name: php-sts
-  namespace: php-sts-sample
-
----
-
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
