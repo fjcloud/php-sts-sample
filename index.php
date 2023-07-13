@@ -22,12 +22,20 @@ $RdsAuthGenerator = new Aws\Rds\AuthTokenGenerator($provider);
 
 $token = $RdsAuthGenerator->createToken($clusterEndpoint . ":" . $clusterPort, $clusterRegion, $dbUsername);
 
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
+
 $db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token dbname=$dbDatabase sslmode=require");
 
    if(!$db) {
       echo "Error in opening database\n";
    } else {
-      $sql = "select now();";
+      $sql = "select iprange,geoname from ref_ip_blocks where iprange >>= '$ip'::ip4r;";
       $ret = pg_query($db, $sql);
       if(!$ret) {
          echo pg_last_error($db);
