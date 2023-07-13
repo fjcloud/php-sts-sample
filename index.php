@@ -46,7 +46,6 @@ $db = pg_connect("host=$clusterEndpoint user=$dbUsername password=$token dbname=
 
          echo json_encode(array(
                     "your_ip" => $ip,
-                    "range" => $row[0],
                     "countrycode" => $row[1],
                                ), JSON_PRETTY_PRINT);
       }
